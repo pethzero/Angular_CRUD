@@ -6,6 +6,13 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
+
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json; charset=utf-8'
+    })
+  };
+  
   private apiUrl = 'http://localhost:3000/api/employees';
 
 
@@ -13,18 +20,15 @@ export class ApiService {
     
   }
 
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json; charset=utf-8'
-    })
-  };
+
 
   GetDataBase(): Observable<any> {
-    return this.http.get(this.apiUrl );
+    return this.http.get(this.apiUrl);
   }
 
   PostDataBase(name: string): Observable<any> {
-    return this.http.post(this.apiUrl, { name },this.httpOptions);
+    const body = { name }
+    return this.http.post(this.apiUrl, body,this.httpOptions);
   }
   
   PutDataBase(id: number, name: string): Observable<any> {
