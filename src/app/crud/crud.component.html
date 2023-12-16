@@ -1,0 +1,44 @@
+<div>
+    <h2>Employee List</h2>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let resdata of listdata; trackBy: trackByData">
+            <td>{{ resdata.id }}</td>
+            <td>
+                <ng-container *ngIf="!resdata.editing; else editMode">
+                    {{ resdata.name }}
+                </ng-container>
+                <ng-template #editMode>
+                    <input [(ngModel)]="resdata.name" [ngModelOptions]="{standalone: true}" />
+
+                </ng-template>
+            </td>
+            <td>
+                <ng-container *ngIf="!resdata.editing; else editingMode">
+                    <button (click)="upadteAction(resdata)" class="btn btn-primary">Edit</button>
+                </ng-container>
+                <ng-template #editingMode>
+                    <button (click)="saveAction(resdata)" class="btn btn-success">Save</button>
+                    <button (click)="cancelAction(resdata)" class="btn btn-warning">Cancel</button>
+                </ng-template>
+            </td>
+            <td>
+                <button (click)="deleteAction(resdata)" class="btn btn-danger">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+
+<form (ngSubmit)="addAction()" autocomplete="off">
+    <h2>Add New Employee</h2>
+    <label for="employeeName">Name:</label>
+    <input type="text" id="employeeName" [(ngModel)]="dataname" name="employeeName" required>
+    <button type="submit">Add Employee</button>
+</form>
+</div>
