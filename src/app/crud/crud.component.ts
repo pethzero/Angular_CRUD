@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,  Input,OnInit,Output,EventEmitter } from '@angular/core';
 import { ApiService } from '../myservice/api.service';
 import { ChangeDetectorRef } from '@angular/core';
 
 export interface DataJson {
   id: number;
   name: string;
+  address: string;
   editing?: boolean;
 }
 
@@ -16,7 +17,12 @@ export interface DataJson {
 })
 export class CrudComponent {
   listdata: any[] = [];
+  listdata_export: any[] = [];
   dataname: string = '';
+  dataaddress: string = '';
+  @Input() actionGetValue: string = '';
+  @Input() actionPostValue: string = '';
+  // @Input() listurl:string = '';
 
   constructor(
     private apiService: ApiService,
@@ -24,11 +30,12 @@ export class CrudComponent {
   ) { }
 
   ngOnInit(): void {
-    this.getAction();
+    this.getAction(this.actionGetValue);
   }
 
-  getAction() {
-    this.apiService.GetDataBase().subscribe(
+  getAction(value:String) {
+    let url = `get?sqlquery=${value}`
+    this.apiService.GetDataBaseNew(url).subscribe(
       (data) => {
         this.listdata = data;
         console.log('Data Data:', this.listdata);
@@ -40,14 +47,11 @@ export class CrudComponent {
   }
 
   addAction() {
-    this.apiService.PostDataBase(this.dataname).subscribe(
+    this.listdata_export = [{ name: this.dataname,address: this.dataaddress}];
+    this.apiService.PostDataBaseNew(this.actionPostValue, JSON.stringify(this.listdata_export)).subscribe(
       (data) => {
         console.log('Data added successfully:', data);
-
-        // หลังจาก Insert สำเร็จ อัปเดตข้อมูลในตาราง
-        this.getAction();
-
-        // ให้ Angular ทราบว่ามีการเปลี่ยนแปลง
+        this.getAction(this.actionGetValue);
         this.cdr.detectChanges();
       },
       (error) => {
@@ -61,14 +65,11 @@ export class CrudComponent {
   }
 
   saveAction(resdata: DataJson): void {
-    // ทำบันทึกข้อมูล ณ ตรงนี้
-    console.log('Saved:', resdata);
+    this.listdata_export = [{ id: resdata.id, name: resdata.name, address: resdata.address }];
     resdata.editing = false;
-
-    this.apiService.PutDataBase(resdata.id, resdata.name).subscribe(
+    this.apiService.PutDataBaseNew("SQL0002", resdata.id, JSON.stringify(this.listdata_export)).subscribe(
       (data) => {
-        console.log('Employee updated successfully:', data);
-        // ทำอย่างอื่น ๆ ตามต้องการ
+        // console.log('Employee updated successfully:', data);
       },
       (error) => {
         console.error('Error updating employee:', error);
@@ -78,22 +79,17 @@ export class CrudComponent {
   }
 
   cancelAction(resdata: DataJson): void {
-    console.log('Edit canceled');
     resdata.editing = false;
   }
 
   deleteAction(resdata: any): void {
     const DataID = resdata.id;
-    // ให้แสดง Alert Box แบบ Confirm
     const userConfirmed = window.confirm('คุณแน่ใจใช่ไหม?');
     if (userConfirmed) {
-      // ผู้ใช้กด "ตกลง" (OK)
-      this.apiService.DeleteDataBase(DataID).subscribe(
+      this.apiService.DeleteDataBaseNew("sqlquery=SQL0003",DataID).subscribe(
         () => {
           console.log('Employee deleted successfully:', DataID);
-          // หลังจาก Delete สำเร็จ อัปเดตข้อมูลในตาราง
-          this.getAction();
-          // ให้ Angular ทราบว่ามีการเปลี่ยนแปลง
+          this.getAction(this.actionGetValue);
           this.cdr.detectChanges();
         },
         (error) => {
@@ -101,12 +97,9 @@ export class CrudComponent {
         }
       );
     } else {
-      // ผู้ใช้กด "ยกเลิก" (Cancel)
       console.log('User canceled deletion.');
     }
   }
-  
-  
 
 
   trackByData(index: number, resdata: any): number {
