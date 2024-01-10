@@ -1,4 +1,44 @@
 /* You can add global styles to this file, and also import other style files */
+// Add this SCSS code to your styles.scss or styles.css file
+
+
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  label {
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  input {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+//   button {
+//     background-color: #007bff;
+//     color: #fff;
+//     border: none;
+//     padding: 10px 15px;
+//     border-radius: 4px;
+//     cursor: pointer;
+//     font-size: 1rem;
+//   }
+
+
+// // Optional: Add hover effect to the button
+// button:hover {
+//   background-color: #0056b3;
+// }
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -55,3 +95,4 @@ table {
   background-color: #dc3545;
   border-color: #dc3545;
 }
+

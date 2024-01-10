@@ -5,7 +5,7 @@ import { ChangeDetectorRef } from '@angular/core';
 export interface DataJson {
   id: number;
   name: string;
-  address: string;
+  score: string;
   editing?: boolean;
 }
 
@@ -19,7 +19,7 @@ export class CrudComponent {
   listdata: any[] = [];
   listdata_export: any[] = [];
   dataname: string = '';
-  dataaddress: string = '';
+  dataascore: number = 0;
   @Input() actionGetValue: string = '';
   @Input() actionPostValue: string = '';
   // @Input() listurl:string = '';
@@ -47,7 +47,7 @@ export class CrudComponent {
   }
 
   addAction() {
-    this.listdata_export = [{ name: this.dataname,address: this.dataaddress}];
+    this.listdata_export = [{ name: this.dataname,score: this.dataascore}];
     this.apiService.PostDataBaseNew(this.actionPostValue, JSON.stringify(this.listdata_export)).subscribe(
       (data) => {
         console.log('Data added successfully:', data);
@@ -65,7 +65,7 @@ export class CrudComponent {
   }
 
   saveAction(resdata: DataJson): void {
-    this.listdata_export = [{ id: resdata.id, name: resdata.name, address: resdata.address }];
+    this.listdata_export = [{ id: resdata.id, name: resdata.name, address: resdata.score }];
     resdata.editing = false;
     this.apiService.PutDataBaseNew("SQL0002", resdata.id, JSON.stringify(this.listdata_export)).subscribe(
       (data) => {
